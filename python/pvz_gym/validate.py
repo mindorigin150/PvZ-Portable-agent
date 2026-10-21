@@ -12,6 +12,7 @@ import time
 
 from gymnasium.utils.env_checker import check_env
 import numpy as np
+from PIL import Image
 
 from pvz_gym.env import PvZEnv
 
@@ -29,7 +30,7 @@ def trace_action(tick):
     }.get(tick, NOOP)
 
 
-def compare(kwargs, seeds, ticks):
+def compare(kwargs, seeds, ticks, output):
     results = []
     for seed in seeds:
         with PvZEnv(**kwargs) as native, PvZEnv(**kwargs, reference=True) as client:
@@ -41,7 +42,11 @@ def compare(kwargs, seeds, ticks):
                     fields = [key for key in a.keys() | b.keys() if a.get(key) != b.get(key)]
                     raise AssertionError(f"First client divergence: seed={seed}, tick={tick}, fields={fields}")
                 if tick % 100 == 0:
-                    if not np.array_equal(native.render(), client.render()):
+                    native_frame, client_frame = native.render(), client.render()
+                    if not np.array_equal(native_frame, client_frame):
+                        Image.fromarray(native_frame).save(output / f"divergence-{seed}-{tick}-native.png")
+                        Image.fromarray(client_frame).save(output / f"divergence-{seed}-{tick}-client.png")
+                        (output / f"divergence-{seed}-{tick}.json").write_text(json.dumps(a, indent=2) + "\n")
                         raise AssertionError(f"First client pixel divergence: seed={seed}, tick={tick}")
                 if tick == ticks:
                     break
@@ -119,11 +124,10 @@ def main():
     with PvZEnv(**kwargs) as env:
         check_env(env)
         image, _ = env.reset(seed=42)
-        from PIL import Image  # Only the validation CLI needs image export.
         Image.fromarray(image).save(output / "initial.png")
     report["gym_checker"] = "passed"
     print("Gym checker passed", flush=True)
-    report["client_comparison"] = compare(kwargs, args.seeds, args.compare_ticks)
+    report["client_comparison"] = compare(kwargs, args.seeds, args.compare_ticks, output)
     (output / "validation.json").write_text(json.dumps(report, indent=2) + "\n")
     print("Client comparison passed", flush=True)
     report["batch"] = []

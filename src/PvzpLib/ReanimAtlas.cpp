@@ -67,8 +67,8 @@ bool sSortByNonIncreasingHeight(const ReanimAtlasImage& image1, const ReanimAtla
 		return image1.mHeight > image2.mHeight;
 	else if (image1.mWidth != image2.mWidth)
 		return image1.mWidth > image2.mWidth;
-	else  // Stable tiebreaker using original image pointer (invariant during sort)
-		return reinterpret_cast<uintptr_t>(image1.mOriginalImage) > reinterpret_cast<uintptr_t>(image2.mOriginalImage);
+	else
+		return false;
 }
 
 static int GetClosestPowerOf2Above(int theNum)
@@ -170,7 +170,8 @@ bool ReanimAtlas::PlaceAtlasImage(ReanimAtlasImage* theAtlasImageToPlace, int th
 
 void ReanimAtlas::ArrangeImages(int& theAtlasWidth, int& theAtlasHeight)
 {
-	std::sort(mImageArray.begin(), mImageArray.end(), sSortByNonIncreasingHeight);
+	// Preserve source order for equal-size images, independent of process addresses.
+	std::stable_sort(mImageArray.begin(), mImageArray.end(), sSortByNonIncreasingHeight);
 	theAtlasWidth = PickAtlasWidth();
 	theAtlasHeight = 0;
 

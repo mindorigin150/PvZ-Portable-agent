@@ -5,7 +5,8 @@ It runs level 1-8 with a fresh synthetic profile and a fixed six-card loadout:
 Sunflower, Peashooter, Cherry Bomb, Wall-nut, Potato Mine, and Snow Pea.
 Reset completes the normal intro before returning the first battle image.
 The Gym wrapper currently supports Linux. Particle shake uses stable particle
-IDs, so process addresses do not alter visual replay.
+IDs. Equal-size atlas images retain their source order. Process addresses do not
+determine particle shake or atlas placement.
 
 ## Build and run
 

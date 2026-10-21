@@ -69,6 +69,8 @@ def test_complete_loss_episode(native_kwargs):
             transition = env.advance(NOOP)
             assert transition == replay.advance(NOOP)
             reward, terminated, truncated, _ = transition
+            if tick % 97 == 0:
+                replay.render()
             if tick % 100 == 0 or terminated:
                 assert env.diagnostics() == replay.diagnostics()
                 np.testing.assert_array_equal(env.render(), replay.render())
