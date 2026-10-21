@@ -41,13 +41,17 @@ with gym.make(
 Run the Python program inside a virtual display on a server:
 
 ```bash
-xvfb-run -a -s '-screen 0 1024x768x24 -nolisten tcp' \
-  env LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=1 SDL_AUDIODRIVER=dummy \
+env LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=1 SDL_AUDIODRIVER=dummy \
+  __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json \
+  xvfb-run -a -s '-screen 0 1024x768x24 -nolisten tcp -noreset' \
   /ABSOLUTE/PATH/pvz-venv/bin/python your_program.py
 ```
 
 This setup uses CPU software rendering. Each native worker owns one OpenGL
 context. Temporary displays do not accept TCP connections.
+The Mesa vendor setting applies to Xvfb as well as the game. On the validation
+server, this avoids an NVIDIA EGL crash when workers disconnect.
+`-noreset` keeps the display active between worker sessions.
 
 ## Observation, action, and clock contracts
 
@@ -123,8 +127,9 @@ without wall-clock pacing. This comparison checks this fork's execution paths.
 It does not compare this reimplementation against the original Windows game.
 
 ```bash
-xvfb-run -a -s '-screen 0 1024x768x24 -nolisten tcp' \
-  env LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=1 SDL_AUDIODRIVER=dummy \
+env LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=1 SDL_AUDIODRIVER=dummy \
+  __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json \
+  xvfb-run -a -s '-screen 0 1024x768x24 -nolisten tcp -noreset' \
   /ABSOLUTE/PATH/pvz-venv/bin/pvz-validate \
   --binary /ABSOLUTE/PATH/build/pvz-portable \
   --resource-dir /ABSOLUTE/PATH/resources \
