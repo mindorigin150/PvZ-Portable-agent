@@ -217,6 +217,7 @@ public:
 	~GLInterface() override;
 
 	GLImage*				GetScreenImage();
+	std::vector<uint8_t> CaptureRgb();
 	void					UpdateViewport();
 	int						Init(bool IsWindowed);
 	bool					Redraw(Rect* theClipRect = nullptr);

@@ -99,6 +99,11 @@ int Sexy::Rand()
 	return gMTRand.Next();
 }
 
+std::string Sexy::SerializeRandState()
+{
+	return gMTRand.Serialize();
+}
+
 int Sexy::Rand(int range)
 {
 	return gMTRand.Next((unsigned long)range);

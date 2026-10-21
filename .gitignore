@@ -456,3 +456,9 @@ build-*/
 
 # Game recordings
 *.dmo
+
+# Python packaging and local validation artifacts
+*.egg-info/
+.pytest_cache/
+.venv/
+outputs/

@@ -1177,6 +1177,21 @@ void GLInterface::Remove3DData(MemoryImage* theImage)
 
 GLImage* GLInterface::GetScreenImage() { return mScreenImage.get(); }
 
+std::vector<uint8_t> GLInterface::CaptureRgb()
+{
+	// Read the completed back buffer before Flush swaps and clears it.
+	GfxEnd();
+	const Rect& r = mPresentationRect;
+	std::vector<uint8_t> rgba(r.mWidth * r.mHeight * 4);
+	glReadPixels(r.mX, r.mY, r.mWidth, r.mHeight, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+	std::vector<uint8_t> rgb(r.mWidth * r.mHeight * 3);
+	for (int y = 0; y < r.mHeight; ++y)
+		for (int x = 0; x < r.mWidth; ++x)
+			for (int c = 0; c < 3; ++c)
+				rgb[(y * r.mWidth + x) * 3 + c] = rgba[((r.mHeight - 1 - y) * r.mWidth + x) * 4 + c];
+	return rgb;
+}
+
 void GLInterface::UpdateViewport()
 {
 	int vx = 0, vy = 0, vw, vh;

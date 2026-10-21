@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pvz-portable-gym"
+version = "0.1.0"
+description = "Isolated RGB and mouse Gymnasium sessions for PvZ Portable"
+requires-python = ">=3.10"
+dependencies = ["gymnasium>=1.2,<2", "numpy>=1.26"]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "Pillow>=10"]
+
+[project.scripts]
+pvz-validate = "pvz_gym.validate:main"
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]

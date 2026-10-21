@@ -25,6 +25,10 @@ A **cross-platform** community-driven reimplementation of Plants vs. Zombies: Ga
 
 ## Features
 
+For isolated screenshot-and-mouse Gymnasium sessions and CPU batch evaluation,
+see [the Gymnasium environment guide](docs/gym.md).
+
+
 - [x] Render with SDL + OpenGL ES 2.0 (desktop OpenGL 2.1 fallback)
   - Also enable to **resize the window**, which was not possible in the original game
   - **Why OpenGL ES 2.0?** GLES 2.0 is the common subset of virtually all modern GPU APIs — every desktop OpenGL 2.1+ driver, mobile GPU, and game console inherently supports it. This means the game works **out of the box** everywhere without extra dependencies. [ANGLE](https://chromium.googlesource.com/angle/angle) can also be optionally used to translate calls to DirectX/Metal/Vulkan if needed.

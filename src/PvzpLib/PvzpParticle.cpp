@@ -539,11 +539,13 @@ void PvzpParticleEmitter::UpdateParticleField(PvzpParticle* theParticle, Particl
 		int aLastRandSeed = theParticle->mParticleAge - 1;
 		if (aLastRandSeed == -1)
 			aLastRandSeed = theParticle->mParticleDuration - 1;
-		srand(aLastRandSeed * reinterpret_cast<uintptr_t>(theParticle));
+		// Particle IDs remain stable across processes and deterministic replays.
+		const unsigned int aParticleKey = mParticleSystem->mParticleHolder->mParticles.DataArrayGetID(theParticle);
+		srand(aLastRandSeed * aParticleKey);
 		theParticle->mPosition.x -= aLastX * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f - 1.0f);
 		theParticle->mPosition.y -= aLastY * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f - 1.0f);
 		// apply this frame's random shake offset
-		srand(theParticle->mParticleAge * reinterpret_cast<uintptr_t>(theParticle));
+		srand(theParticle->mParticleAge * aParticleKey);
 		theParticle->mPosition.x += x * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f - 1.0f);
 		theParticle->mPosition.y += y * (static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f - 1.0f);
 		break;

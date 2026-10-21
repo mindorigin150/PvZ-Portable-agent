@@ -21,6 +21,7 @@
 
 #include "LawnApp.h"
 #include "Resources.h"
+#include "GymWorker.h"
 #include "PvzpLib/PvzpStringFile.h"
 #include <cstdlib>
 #include <vector>
@@ -84,6 +85,8 @@ static void BuildUtf8ArgsFromWin32(int& argc, char**& argv)
 
 int main(int argc, char** argv)
 {
+	if (argc > 1 && std::string(argv[1]) == "--gym-worker")
+		return GymWorkerMain(argc, argv);
 #ifdef __SWITCH__
 	consoleDebugInit(debugDevice_SVC);
 #endif

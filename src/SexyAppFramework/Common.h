@@ -148,6 +148,7 @@ int					Rand();
 int					Rand(int range);
 float				Rand(float range);
 void				SRand(ulong theSeed);
+std::string         SerializeRandState();
 std::string			GetAppDataFolder();
 void				SetAppDataFolder(std::string_view thePath);
 std::string			GetAppDataPath(std::string_view theRelativePath);
